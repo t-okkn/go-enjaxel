@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/t-okkn/go-enjaxel"
+	"github.com/t-okkn/go-enjaxel/crypto"
 )
 
 var (
@@ -13,5 +13,5 @@ var (
 // summary => main関数
 /////////////////////////////////////////
 func main() {
-	fmt.Prinln(crypto.PasswordHash("Hoge"))
+	fmt.Println(crypto.PasswordHash("Hoge"))
 }
