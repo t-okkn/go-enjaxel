@@ -12,8 +12,8 @@ import (
 
 func EncryptByCFB(key []byte, plainText string) (string, error) {
 	if !(len(key) == 16 || len(key) == 24 || len(key) == 32) {
-		e := errors.New("鍵長は128bit, 192bit, 256bitのいずれかでなくてはなりません")
-		return "", e
+		e := "鍵長は128bit, 192bit, 256bitのいずれかでなくてはなりません"
+		return "", errors.New(e)
 	}
 
 	block, err := aes.NewCipher(key)
@@ -51,8 +51,8 @@ func EasyEncryptByCFB(plainText string) (string, []byte, error) {
 
 func DecryptByCFB(key []byte, base64Text string) (string, error) {
 	if !(len(key) == 16 || len(key) == 24 || len(key) == 32) {
-		e := errors.New("鍵長は128bit, 192bit, 256bitのいずれかでなくてはなりません")
-		return "", e
+		e := "鍵長は128bit, 192bit, 256bitのいずれかでなくてはなりません"
+		return "", errors.New(e)
 	}
 
 	data, err := base64.StdEncoding.DecodeString(base64Text)
@@ -80,8 +80,8 @@ func DecryptByCFB(key []byte, base64Text string) (string, error) {
 
 func EncryptByGCM(key []byte, plainText string) (string, error) {
 	if !(len(key) == 16 || len(key) == 24 || len(key) == 32) {
-		e := errors.New("鍵長は128bit, 192bit, 256bitのいずれかでなくてはなりません")
-		return "", e
+		e := "鍵長は128bit, 192bit, 256bitのいずれかでなくてはなりません"
+		return "", errors.New(e)
 	}
 
 	block, err := aes.NewCipher(key)
@@ -123,8 +123,8 @@ func EasyEncryptByGCM(plainText string) (string, []byte, error) {
 
 func DecryptByGCM(key []byte, base64Text string) (string, error) {
 	if !(len(key) == 16 || len(key) == 24 || len(key) == 32) {
-		e := errors.New("鍵長は128bit, 192bit, 256bitのいずれかでなくてはなりません")
-		return "", e
+		e := "鍵長は128bit, 192bit, 256bitのいずれかでなくてはなりません"
+		return "", errors.New(e)
 	}
 
 	data, err := base64.StdEncoding.DecodeString(base64Text)
@@ -151,7 +151,7 @@ func DecryptByGCM(key []byte, base64Text string) (string, error) {
 	return string(plaindata), nil
 }
 
-func GenerateSafeKey(length int) ([]byte, error) {
+func GenerateSafeKey(length int32) ([]byte, error) {
 	key := make([]byte, length)
 
 	if _, err := io.ReadFull(rand.Reader, key); err != nil {
