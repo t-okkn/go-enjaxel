@@ -94,7 +94,7 @@ func (t *AccessToken) SendImageFile(msg, imgpath string) error {
 		return errors.New(e)
 	}
 
-	if !(jxio.FileExists(imgpath)) {
+	if exist, _ := jxio.FileExists(imgpath); !exist {
 		e := "画像ファイルが存在しません"
 		return errors.New(e)
 	}
@@ -173,8 +173,8 @@ func (t *AccessToken) SendImageFile(msg, imgpath string) error {
 	if err != nil { return err }
 
 	if resp.StatusCode != 200 {
-		e := errors.New("[status code: " + resp.Status + "] Failed to send data")
-		return e
+		e := "[status code: " + resp.Status + "] Failed to send data"
+		return errors.New(e)
 	}
 
 	/* ***********for debug*********** //
@@ -224,8 +224,8 @@ func (t *AccessToken) sendFormData(msg string, form *url.Values) error {
 	}
 
 	if resp.StatusCode != 200 {
-		e := errors.New("[status code: " + resp.Status + "] Failed to send data")
-		return e
+		e := "[status code: " + resp.Status + "] Failed to send data"
+		return errors.New(e)
 	}
 
 	/* ***********for debug*********** //

@@ -9,11 +9,11 @@ func IsExists(path string) bool {
 	return err == nil
 }
 
-func FileExists(path string) bool {
+func FileExists(path string) (bool, os.FileMode) {
 	stat, err := os.Stat(path)
-	if err != nil { return false }
+	if err != nil { return false, os.FileMode(0) }
 
-	return !(stat.IsDir())
+	return !(stat.IsDir()), stat.Mode()
 }
 
 func DirExists(path string) bool {
