@@ -27,11 +27,11 @@ type AccessToken struct {
 }
 
 var (
-	NotificationDisabled bool
+	notificationDisabled bool
 )
 
 func NewLineClientWithTag(token, tag string) *AccessToken {
-	NotificationDisabled = false
+	notificationDisabled = false
 
 	at := AccessToken{token, tag}
 	return &at
@@ -42,11 +42,11 @@ func NewLineClient(token string) *AccessToken {
 }
 
 func LineNotificationOn() {
-	NotificationDisabled = false
+	notificationDisabled = false
 }
 
 func LineNotificationOff() {
-	NotificationDisabled = true
+	notificationDisabled = true
 }
 
 func (t *AccessToken) SendMessage(msg string) error {
@@ -110,7 +110,7 @@ func (t *AccessToken) SendImageFile(msg, imgpath string) error {
 		return err
 	}
 
-	b := fmt.Sprintf("%t", NotificationDisabled)
+	b := fmt.Sprintf("%t", notificationDisabled)
 	if err := w.WriteField("notificationDisabled", b); err != nil {
 		return err
 	}
@@ -200,7 +200,7 @@ func (t *AccessToken) sendFormData(msg string, form *url.Values) error {
 
 	(*form).Add("message", msg)
 
-	strbool := fmt.Sprintf("%t", NotificationDisabled)
+	strbool := fmt.Sprintf("%t", notificationDisabled)
 	(*form).Add("notificationDisabled", strbool)
 
 	requri, err := url.ParseRequestURI(LINE_NOTIFY_URL)
