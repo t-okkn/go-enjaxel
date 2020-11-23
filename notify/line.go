@@ -51,7 +51,7 @@ func LineNotificationOff() {
 
 func (t *AccessToken) SendMessage(msg string) error {
 	form := url.Values{}
-	return t.sendFormData(msg, &form)
+	return t.sendFormData(msg, form)
 }
 
 func (t *AccessToken) SendImageUrl(msg, imgurl, thumbUrl string) error {
@@ -59,7 +59,7 @@ func (t *AccessToken) SendImageUrl(msg, imgurl, thumbUrl string) error {
 	form.Add("imageFullsize", imgurl)
 	form.Add("imageThumbnail", thumbUrl)
 
-	return t.sendFormData(msg, &form)
+	return t.sendFormData(msg, form)
 }
 
 func (t *AccessToken) SendSticker(msg string, packageId, id int32) error {
@@ -80,7 +80,7 @@ func (t *AccessToken) SendSticker(msg string, packageId, id int32) error {
 	form.Add("stickerPackageId", fmt.Sprintf("%d", packageId))
 	form.Add("stickerId", fmt.Sprintf("%d", id))
 
-	return t.sendFormData(msg, &form)
+	return t.sendFormData(msg, form)
 }
 
 func (t *AccessToken) SendImageFile(msg, imgpath string) error {
@@ -102,8 +102,8 @@ func (t *AccessToken) SendImageFile(msg, imgpath string) error {
 	body := &bytes.Buffer{}
 	w := multipart.NewWriter(body)
 
-	if len((*t).Tag) > 0 {
-		msg = fmt.Sprintf("[%s]\n", (*t).Tag) + msg
+	if len(t.Tag) > 0 {
+		msg = fmt.Sprintf("[%s]\n", t.Tag) + msg
 	}
 
 	if err := w.WriteField("message", msg); err != nil {
@@ -165,7 +165,7 @@ func (t *AccessToken) SendImageFile(msg, imgpath string) error {
 	if err != nil { return err }
 
 	req.Header.Set("Content-Type", w.FormDataContentType())
-	req.Header.Set("Authorization", "Bearer " + (*t).Token)
+	req.Header.Set("Authorization", "Bearer " + t.Token)
 
 	client := &http.Client{}
 
@@ -188,34 +188,34 @@ func (t *AccessToken) SendImageFile(msg, imgpath string) error {
 	return nil
 }
 
-func (t *AccessToken) sendFormData(msg string, form *url.Values) error {
+func (t *AccessToken) sendFormData(msg string, form url.Values) error {
 	if len([]rune(msg)) > 1000 {
 		e := errors.New("1000文字より多いメッセージは送信できません")
 		return e
 	}
 
-	if len((*t).Tag) > 0 {
-		msg = fmt.Sprintf("[%s]\n", (*t).Tag) + msg
+	if len(t.Tag) > 0 {
+		msg = fmt.Sprintf("[%s]\n", t.Tag) + msg
 	}
 
-	(*form).Add("message", msg)
+	form.Add("message", msg)
 
 	strbool := fmt.Sprintf("%t", notificationDisabled)
-	(*form).Add("notificationDisabled", strbool)
+	form.Add("notificationDisabled", strbool)
 
 	requri, err := url.ParseRequestURI(LINE_NOTIFY_URL)
 	if err != nil {
 		return err
 	}
 
-	body := strings.NewReader((*form).Encode())
+	body := strings.NewReader(form.Encode())
 	req, err := http.NewRequest("POST", requri.String(), body)
 	if err != nil {
 		return err
 	}
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Set("Authorization", "Bearer " + (*t).Token)
+	req.Header.Set("Authorization", "Bearer " + t.Token)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
