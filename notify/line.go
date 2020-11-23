@@ -21,7 +21,7 @@ const (
 	LINE_NOTIFY_URL string = "https://notify-api.line.me/api/notify"
 )
 
-type AccessToken struct {
+type LineNotifyToken struct {
 	Token  string
 	Tag    string
 }
@@ -30,14 +30,13 @@ var (
 	notificationDisabled bool
 )
 
-func NewLineClientWithTag(token, tag string) *AccessToken {
+func NewLineClientWithTag(token, tag string) *LineNotifyToken {
 	notificationDisabled = false
 
-	at := AccessToken{token, tag}
-	return &at
+	return &LineNotifyToken{token, tag}
 }
 
-func NewLineClient(token string) *AccessToken {
+func NewLineClient(token string) *LineNotifyToken {
 	return NewLineClientWithTag(token, "")
 }
 
@@ -49,12 +48,12 @@ func LineNotificationOff() {
 	notificationDisabled = true
 }
 
-func (t *AccessToken) SendMessage(msg string) error {
+func (t *LineNotifyToken) SendMessage(msg string) error {
 	form := url.Values{}
 	return t.sendFormData(msg, form)
 }
 
-func (t *AccessToken) SendImageUrl(msg, imgurl, thumbUrl string) error {
+func (t *LineNotifyToken) SendImageUrl(msg, imgurl, thumbUrl string) error {
 	form := url.Values{}
 	form.Add("imageFullsize", imgurl)
 	form.Add("imageThumbnail", thumbUrl)
@@ -62,7 +61,7 @@ func (t *AccessToken) SendImageUrl(msg, imgurl, thumbUrl string) error {
 	return t.sendFormData(msg, form)
 }
 
-func (t *AccessToken) SendSticker(msg string, packageId, id int32) error {
+func (t *LineNotifyToken) SendSticker(msg string, packageId, id int32) error {
 	if packageId < 1 || packageId > 4 {
 		e := "スタンプのパッケージ識別子が不正です"
 		return errors.New(e)
@@ -83,7 +82,7 @@ func (t *AccessToken) SendSticker(msg string, packageId, id int32) error {
 	return t.sendFormData(msg, form)
 }
 
-func (t *AccessToken) SendImageFile(msg, imgpath string) error {
+func (t *LineNotifyToken) SendImageFile(msg, imgpath string) error {
 	if len([]rune(msg)) > 1000 {
 		e := "1000文字より多いメッセージは送信できません"
 		return errors.New(e)
@@ -188,7 +187,7 @@ func (t *AccessToken) SendImageFile(msg, imgpath string) error {
 	return nil
 }
 
-func (t *AccessToken) sendFormData(msg string, form url.Values) error {
+func (t *LineNotifyToken) sendFormData(msg string, form url.Values) error {
 	if len([]rune(msg)) > 1000 {
 		e := errors.New("1000文字より多いメッセージは送信できません")
 		return e
