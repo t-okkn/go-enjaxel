@@ -264,7 +264,7 @@ func (m *MailContent) SendMail() error {
 	return smtp.SendMail(
 		smtpaddr,
 		auth,
-		m.From.String(),
+		m.From.Address,
 		m.getToAddressList(),
 		buf.Bytes(),
     )
@@ -334,7 +334,7 @@ func (m *MailContent) addMailAddress(address, dest string) error {
 
 func (m *MailContent) getToAddressList() []string {
 	max := len(m.To) + len(m.Cc) + len(m.Bcc)
-	tolist := make([]string, max, max)
+	tolist := make([]string, 0, max)
 
 	for _, to := range m.To {
 		tolist = append(tolist, to.Address)
@@ -352,7 +352,7 @@ func (m *MailContent) getToAddressList() []string {
 }
 
 func getStringAddress(mailobj []*mail.Address) string {
-	strs := make([]string, len(mailobj), len(mailobj))
+	strs := make([]string, 0, len(mailobj))
 
 	for _, a := range mailobj {
 		strs = append(strs, a.String())
